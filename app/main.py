@@ -29,3 +29,6 @@ app.include_router(items.router, prefix="/items", tags=["items"])
 def root():
     return {"message": "Welcome to REGALOO 🎁"}
     
+@app.get("/healt")
+def root():
+    return {"message": "HEALTHY"}
