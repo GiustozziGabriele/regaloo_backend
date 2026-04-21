@@ -30,5 +30,9 @@ def root():
     return {"message": "Welcome to REGALOO 🎁"}
     
 @app.head("/health")
-def health_root():
+def head_health_root():
+    return {"message": "HEALTY"}
+
+@app.get("/health")
+def get_health_root():
     return {"message": "HEALTY"}
