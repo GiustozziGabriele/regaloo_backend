@@ -11,7 +11,7 @@ app = FastAPI(
 origins = [
     "http://localhost:5173",  # Vite dev server
     "http://localhost:3000",  # eventuale altro frontend
-    "https://regaloo-dev.netlify.app/"
+    "https://regaloo-dev.netlify.app"
 ]
 
 app.add_middleware(
