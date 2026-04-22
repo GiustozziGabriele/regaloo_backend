@@ -17,6 +17,8 @@ class ItemResponse(BaseModel):
     price: float | None
     created_at: datetime
 
+class AddExistingItems(BaseModel):
+    item_ids: list[str]
 
 # --- CLASSE DI DOMINIO con logica ---
 
