@@ -1,12 +1,44 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
+from typing import Optional
 from app.db.supabase import supabase_client
-from app.helpers.auth import get_current_user_id
+from app.helpers.auth import get_current_user_id, get_optional_user_id
 from app.helpers.response import *
 from app.models.items import Item, ItemCreate, AddExistingItems
 from app.models.item_context import ItemContext, ItemContextCreate
 
 router = APIRouter()
+
+@router.get("/{wishlist_id}")
+def get_wishlist_items(wishlist_id: str, user_id: Optional[str] = Depends(get_optional_user_id)):
+    function_name = 'get_wishlist_items'
+
+    try:
+        item_context_result = supabase_client.table('item_context').select('*, item_id(*), wishlist_id(*)').eq('wishlist_id', wishlist_id).execute()
+        if not item_context_result.data:
+            return JSONResponse(
+                status_code=400,
+                content=fail(message="Errore durante il recupero degli items", function=function_name, code="ITEM_CREATE_FAILED")
+            )
+        
+        data = item_context_result.data or []
+        is_owner = False
+        
+        if user_id and data:
+            is_owner = user_id == data[0]['created_by_user_id']
+
+        
+        return JSONResponse(
+            status_code=200,
+            content=success(function=function_name, data=item_context_result.data, is_owner=is_owner)
+        )
+
+    except Exception as e: 
+        print(e)
+        return JSONResponse(
+            status_code=500,
+            content=fail(message="Errore interno del server", function=function_name, code="INTERNAL_ERROR")
+        )
 
 @router.post("/{wishlist_id}/create-item")
 def create_wishlist_item(payload: ItemCreate, wishlist_id: str, user_id: str = Depends(get_current_user_id)):

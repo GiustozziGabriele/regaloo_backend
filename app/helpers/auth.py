@@ -15,3 +15,9 @@ def get_current_user_id(request: Request) -> str:
 
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid token")
+    
+def get_optional_user_id():
+    try:
+        return get_current_user_id()
+    except:
+        return None
