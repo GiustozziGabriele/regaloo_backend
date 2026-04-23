@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-def success(function, data=None, is_owner=None):
+def success(function, data=None, is_owner=None, is_logged=None):
     return {
         "success": True,
         "data": data,
@@ -8,7 +8,8 @@ def success(function, data=None, is_owner=None):
         "meta": {
             "function": function,
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "is_owner": is_owner
+            "is_owner": is_owner,
+            "is_logged": is_logged
         }
     }
 

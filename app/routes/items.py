@@ -23,24 +23,26 @@ def get_wishlist_items(wishlist_id: str, user_id: Optional[str] = Depends(get_op
         
         data = item_context_result.data or []
         is_owner = False
+        is_logged = False
         
         if user_id and data:
             is_owner = user_id == data[0]['created_by_user_id']
 
+        if user_id:
+            is_logged = True
         
         return JSONResponse(
             status_code=200,
-            content=success(function=function_name, data=item_context_result.data, is_owner=is_owner)
+            content=success(function=function_name, data=item_context_result.data, is_owner=is_owner, is_logged=is_logged)
         )
 
     except Exception as e: 
-        print(e)
         return JSONResponse(
             status_code=500,
             content=fail(message="Errore interno del server", function=function_name, code="INTERNAL_ERROR")
         )
 
-@router.post("/{wishlist_id}/create-item")
+@router.post("/{wishlist_id}/create-wishlist-item")
 def create_wishlist_item(payload: ItemCreate, wishlist_id: str, user_id: str = Depends(get_current_user_id)):
     item = Item.from_create(payload, user_id)
     function_name = 'create_wishlist_item'
@@ -115,7 +117,7 @@ def get_available_items(wishlist_id: str, user_id: str = Depends(get_current_use
             content=fail(message="Errore recupero items disponibili", function=function_name, code="INTERNAL_ERROR")
         )
     
-@router.post("/{wishlist_id}/add-existing")
+@router.post("/wishlist{wishlist_id}/add-existing")
 def add_existing_items(wishlist_id: str, payload: AddExistingItems, user_id: str = Depends(get_current_user_id)):
     function_name = 'add_existing_items'
 
