@@ -1,13 +1,14 @@
 from datetime import datetime, timezone
 
-def success(function, data=None):
+def success(function, data=None, is_owner=None):
     return {
         "success": True,
         "data": data,
         "error": None,
         "meta": {
             "function": function,
-            "timestamp": datetime.now(timezone.utc).isoformat()
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "is_owner": is_owner
         }
     }
 
